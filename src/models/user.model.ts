@@ -19,6 +19,14 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		default: "pending",
 	},
+	createdAt: {
+		type: Date,
+		default: Date.now,
+	},
+	updateAt: {
+		type: Date,
+		default: Date.now,
+	},
 });
 
 const user = mongoose.model("User", userSchema);

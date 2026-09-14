@@ -31,11 +31,11 @@ const register = async (req: Request, res: Response) => {
 		return res.status(201).json({
 			message: "User registration success",
 		});
-	} catch (err: unknown) {
-		console.log(err);
+	} catch (error) {
+		console.log(error);
 
 		const message =
-			err instanceof Error ? err.message : "Internal server error";
+			error instanceof Error ? error.message : "Internal server error";
 		return res.status(500).json({ message });
 	}
 };
@@ -71,11 +71,11 @@ const login = async (req: Request, res: Response) => {
 		return res.status(200).json({
 			message: "User login success",
 		});
-	} catch (err: unknown) {
-		console.log(err);
+	} catch (error) {
+		console.log(error);
 
 		const message =
-			err instanceof Error ? err.message : "Internal server error";
+			error instanceof Error ? error.message : "Internal server error";
 		return res.status(500).json({ message });
 	}
 };
