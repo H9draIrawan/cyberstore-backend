@@ -1,5 +1,6 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
+import user from "../models/user.model.js";
 
 const register = async (req: Request, res: Response) => {
 	try {
@@ -11,7 +12,21 @@ const register = async (req: Request, res: Response) => {
 			});
 		}
 
-		const hash = bcrypt.hashSync(password, 8);
+		const userExist = await user.findOne({
+			$or: [{ username }, { email }],
+		});
+
+		if (userExist) {
+			return res.status(409).json({
+				message: "User already exists",
+			});
+		}
+
+		user.create({
+			username: username,
+			email: email,
+			password: bcrypt.hashSync(password, 8),
+		});
 
 		return res.status(201).json({
 			message: "User registration success",
@@ -35,7 +50,23 @@ const login = async (req: Request, res: Response) => {
 			});
 		}
 
-		// const isPassword = await bcrypt.compare(password, password)
+		const userExist = await user.findOne({
+			email: email,
+		});
+
+		if (!userExist) {
+			return res.status(404).json({
+				message: "User don't exists",
+			});
+		}
+
+		const isPassword = bcrypt.compareSync(password, userExist.password);
+
+		if (!isPassword) {
+			return res.status(409).json({
+				message: "Password incorrect",
+			});
+		}
 
 		return res.status(200).json({
 			message: "User login success",

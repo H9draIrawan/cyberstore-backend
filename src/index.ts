@@ -1,9 +1,11 @@
 import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
 import "dotenv/config";
 import route from "./routes/route.js";
 
 const app = express();
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -15,6 +17,9 @@ app.use(
 );
 app.use("/api", route);
 
-app.listen(process.env.PORT, () => {
-	console.log("Server running http://localhost:", process.env.PORT);
+app.listen(port, () => {
+	mongoose.connect("mongodb://localhost:27017/cyberStore").then(() => {
+		console.log("MongoDB connected");
+		console.log("[Server] : Server is running at http://localhost:", port);
+	});
 });
