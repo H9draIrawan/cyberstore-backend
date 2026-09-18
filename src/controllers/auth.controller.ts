@@ -79,5 +79,22 @@ const login = async (req: Request, res: Response) => {
 		return res.status(500).json({ message });
 	}
 };
+const logout = async (req: Request, res: Response) => {};
+const profile = async (req: Request, res: Response) => {};
+const activation = async (req: Request, res: Response) => {};
+const resendToken = async (req: Request, res: Response) => {};
+const forgotPassword = async (req: Request, res: Response) => {};
+const changePassword = async (req: Request, res: Response) => {};
+const rememberMe = async (req: Request, res: Response) => {};
 
-export { login, register };
+export {
+	login,
+	register,
+	logout,
+	profile,
+	activation,
+	resendToken,
+	forgotPassword,
+	changePassword,
+	rememberMe,
+};

@@ -32,9 +32,9 @@ const getById = async (req: Request, res: Response) => {
 	}
 };
 
-const getByEmail = async (req: Request<{email : string}>, res: Response) => {
+const getByEmail = async (req: Request<{ email: string }>, res: Response) => {
 	try {
-		const { email} = req.params;
+		const { email } = req.params;
 		const userByEmail = await User.findOne({ email: email });
 		return res.status(200).json({
 			user: userByEmail,
@@ -46,12 +46,15 @@ const getByEmail = async (req: Request<{email : string}>, res: Response) => {
 			error instanceof Error ? error.message : "Internal server error";
 		return res.status(500).json({ message });
 	}
-}
+};
 
-const getByUsername = async(req : Request<{username : string}>, res : Response) => {
+const getByUsername = async (
+	req: Request<{ username: string }>,
+	res: Response,
+) => {
 	try {
-		const {username} = req.params;
-		const userByUsername = await User.findOne({username:username });
+		const { username } = req.params;
+		const userByUsername = await User.findOne({ username: username });
 		return res.status(200).json({
 			user: userByUsername,
 		});
@@ -62,7 +65,18 @@ const getByUsername = async(req : Request<{username : string}>, res : Response) 
 			error instanceof Error ? error.message : "Internal server error";
 		return res.status(500).json({ message });
 	}
+};
 
-}
+const updateUser = async (req: Request, res: Response) => {};
+const softDeleteUser = async (req: Request, res: Response) => {};
+const hardDeleteUser = async (req: Request, res: Response) => {};
 
-export { getAll, getById, getByEmail, getByUsername };
+export {
+	getAll,
+	getById,
+	getByEmail,
+	getByUsername,
+	updateUser,
+	softDeleteUser,
+	hardDeleteUser,
+};
