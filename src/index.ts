@@ -13,9 +13,10 @@ app.use(
 	cors({
 		origin: process.env.CORS_ORIGIN,
 		credentials: true,
+		
 	}),
 );
-app.use("/api", route);
+app.use("/api/v1", route);
 
 app.listen(port, () => {
 	mongoose.connect("mongodb://localhost:27017/cyberStore").then(() => {

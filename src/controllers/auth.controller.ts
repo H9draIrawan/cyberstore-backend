@@ -2,12 +2,13 @@ import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import user from "../models/user.model.js";
 
-const register = async (req: Request, res: Response) => {
-	try {
-		const { username, email, password } = req.body;
+function createCookies() {}
 
+const register = async (_req: Request, _res: Response) => {
+	try {
+		const { username, email, password } = _req.body;
 		if (!username || !email || !password) {
-			return res.status(400).json({
+			return _res.status(400).json({
 				message: "All form required",
 			});
 		}
@@ -17,7 +18,7 @@ const register = async (req: Request, res: Response) => {
 		});
 
 		if (userExist) {
-			return res.status(409).json({
+			return _res.status(409).json({
 				message: "User already exists",
 			});
 		}
@@ -25,10 +26,10 @@ const register = async (req: Request, res: Response) => {
 		user.create({
 			username: username,
 			email: email,
-			password: bcrypt.hashSync(password, 8),
+			password: bcrypt.hashSync(password, 10),
 		});
 
-		return res.status(201).json({
+		return _res.status(201).json({
 			message: "User registration success",
 		});
 	} catch (error) {
@@ -36,16 +37,16 @@ const register = async (req: Request, res: Response) => {
 
 		const message =
 			error instanceof Error ? error.message : "Internal server error";
-		return res.status(500).json({ message });
+		return _res.status(500).json({ message });
 	}
 };
 
-const login = async (req: Request, res: Response) => {
+const login = async (_req: Request, _res: Response) => {
 	try {
-		const { email, password } = req.body;
+		const { email, password, isRememberMe } = _req.body;
 
 		if (!email || !password) {
-			return res.status(400).json({
+			return _res.status(400).json({
 				message: "All form required",
 			});
 		}
@@ -55,7 +56,7 @@ const login = async (req: Request, res: Response) => {
 		});
 
 		if (!userExist) {
-			return res.status(404).json({
+			return _res.status(404).json({
 				message: "User don't exists",
 			});
 		}
@@ -63,12 +64,15 @@ const login = async (req: Request, res: Response) => {
 		const isPassword = bcrypt.compareSync(password, userExist.password);
 
 		if (!isPassword) {
-			return res.status(409).json({
+			return _res.status(409).json({
 				message: "Password incorrect",
 			});
 		}
 
-		return res.status(200).json({
+		if (isRememberMe) {
+		}
+
+		return _res.status(200).json({
 			message: "User login success",
 		});
 	} catch (error) {
@@ -76,25 +80,29 @@ const login = async (req: Request, res: Response) => {
 
 		const message =
 			error instanceof Error ? error.message : "Internal server error";
-		return res.status(500).json({ message });
+		return _res.status(500).json({ message });
 	}
 };
-const logout = async (req: Request, res: Response) => {};
-const profile = async (req: Request, res: Response) => {};
-const activation = async (req: Request, res: Response) => {};
-const resendToken = async (req: Request, res: Response) => {};
-const forgotPassword = async (req: Request, res: Response) => {};
-const changePassword = async (req: Request, res: Response) => {};
-const rememberMe = async (req: Request, res: Response) => {};
+
+const logout = async (_req: Request, _res: Response) => {};
+
+const refresh = async (_req: Request, _res: Response) => {};
+
+const activationUser = async (_req: Request, _res: Response) => {};
+
+const resendToken = async (_req: Request, _res: Response) => {};
+
+const forgotPassword = async (_req: Request, _res: Response) => {};
+
+const changePassword = async (_req: Request, _res: Response) => {};
 
 export {
 	login,
 	register,
 	logout,
-	profile,
-	activation,
+	refresh,
+	activationUser,
 	resendToken,
 	forgotPassword,
 	changePassword,
-	rememberMe,
 };

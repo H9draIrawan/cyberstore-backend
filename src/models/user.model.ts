@@ -1,6 +1,12 @@
+import { randomUUID } from "crypto";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+	_id: {
+		type: String,
+		default: randomUUID,
+		unique: true,
+	},
 	username: {
 		type: String,
 		required: true,
@@ -18,6 +24,7 @@ const userSchema = new mongoose.Schema({
 	status: {
 		type: String,
 		default: "pending",
+		//pending, active, blocked, deleted
 	},
 	createdAt: {
 		type: Date,

@@ -7,6 +7,9 @@ const route = express.Router();
 
 route.use("/auth", auth);
 route.use("/users", user);
-route.use("/shop", shop);
+route.use("/shops", shop);
+// route.use("/products");
+// route.use("/orders");
+// route.use("/transactions");
 
 export default route;
