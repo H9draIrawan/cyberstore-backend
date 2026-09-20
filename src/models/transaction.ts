@@ -5,7 +5,6 @@ const transactionSchema = new mongoose.Schema({
 	_id: {
 		type: String,
 		default: randomUUID,
-		unique: true,
 	},
 	name: {
 		type: String,

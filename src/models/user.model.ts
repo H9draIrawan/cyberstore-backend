@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
 	_id: {
 		type: String,
 		default: randomUUID,
-		unique: true,
 	},
 	username: {
 		type: String,

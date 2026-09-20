@@ -1,7 +1,7 @@
 import { type CookieOptions, type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
+import { user } from "../models/user.model.js";
 import "dotenv/config";
 
 function createCookies(userId: string, isRememberMe: boolean) {
@@ -28,7 +28,7 @@ const register = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		const userExist = await User.findOne({
+		const userExist = await user.findOne({
 			$or: [{ username }, { email }],
 		});
 
@@ -38,7 +38,7 @@ const register = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		User.create({
+		user.create({
 			username: username,
 			email: email,
 			password: bcrypt.hashSync(password, 10),
@@ -66,7 +66,7 @@ const login = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		const userExist = await User.findOne({
+		const userExist = await user.findOne({
 			email: email,
 		});
 
