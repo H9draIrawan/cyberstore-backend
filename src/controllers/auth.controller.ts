@@ -1,8 +1,23 @@
-import { type Request, type Response } from "express";
+import { type CookieOptions, type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import user from "../models/user.model.js";
+import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
+import "dotenv/config";
 
-function createCookies() {}
+function createCookies(userId: string, isRememberMe: boolean) {
+	const token = jwt.sign(userId, process.env.JWT_SECRET!, {
+		expiresIn: "3m",
+	});
+
+	const cookieOptions: CookieOptions = {
+		httpOnly: true,
+		secure: true,
+		sameSite: "lax",
+		maxAge: isRememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined,
+	};
+
+	return { token, cookieOptions };
+}
 
 const register = async (_req: Request, _res: Response) => {
 	try {
@@ -13,7 +28,7 @@ const register = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		const userExist = await user.findOne({
+		const userExist = await User.findOne({
 			$or: [{ username }, { email }],
 		});
 
@@ -23,7 +38,7 @@ const register = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		user.create({
+		User.create({
 			username: username,
 			email: email,
 			password: bcrypt.hashSync(password, 10),
@@ -51,7 +66,7 @@ const login = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		const userExist = await user.findOne({
+		const userExist = await User.findOne({
 			email: email,
 		});
 
@@ -69,8 +84,9 @@ const login = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		if (isRememberMe) {
-		}
+		const { token, cookieOptions } = createCookies(userExist.id, isRememberMe);
+
+		_res.cookie("x-auth-token", token, cookieOptions);
 
 		return _res.status(200).json({
 			message: "User login success",
@@ -84,9 +100,45 @@ const login = async (_req: Request, _res: Response) => {
 	}
 };
 
-const logout = async (_req: Request, _res: Response) => {};
+const logout = async (_req: Request, _res: Response) => {
+	try {
+		_res.clearCookie("x-auth-token");
+		return _res.status(200).json({
+			message: "Logout successful",
+		});
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Internal server error";
+		if (error instanceof Error) {
+			return _res.status(500).json({ message: message });
+		}
+	}
+};
 
-const refresh = async (_req: Request, _res: Response) => {};
+const refresh = async (_req: Request, _res: Response) => {
+	try {
+		const auth = _req.cookies["x-auth-token"];
+
+		if (!auth) {
+			return _res.status(401).json({
+				message: "Unauthorized",
+			});
+		}
+
+		const userId = jwt.verify(auth, process.env.JWT_SECRET!);
+
+		return _res.status(200).json({
+			message: "Authorized",
+			userId: userId,
+		});
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Internal server error";
+		if (error instanceof Error) {
+			return _res.status(500).json({ message: message });
+		}
+	}
+};
 
 const activationUser = async (_req: Request, _res: Response) => {};
 
