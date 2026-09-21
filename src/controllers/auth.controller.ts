@@ -4,8 +4,15 @@ import jwt from "jsonwebtoken";
 import { user } from "../models/user.model.js";
 import "dotenv/config";
 
-function createCookies(userId: string, isRememberMe: boolean) {
-	const token = jwt.sign(userId, process.env.JWT_SECRET!, {
+function createCookies(
+	payload: {
+		_id: string;
+		role: string[];
+		status: string;
+	},
+	isRememberMe: boolean,
+) {
+	const token = jwt.sign({ payload }, process.env.JWT_SECRET!, {
 		expiresIn: "3m",
 	});
 
@@ -84,7 +91,14 @@ const login = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		const { token, cookieOptions } = createCookies(userExist.id, isRememberMe);
+		const { token, cookieOptions } = createCookies(
+			{
+				_id: userExist._id,
+				role: userExist.role,
+				status: userExist.status,
+			},
+			isRememberMe,
+		);
 
 		_res.cookie("x-auth-token", token, cookieOptions);
 
@@ -92,7 +106,7 @@ const login = async (_req: Request, _res: Response) => {
 			message: "User login success",
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 
 		const message =
 			error instanceof Error ? error.message : "Internal server error";

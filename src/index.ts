@@ -13,13 +13,13 @@ app.use(
 	cors({
 		origin: process.env.CORS_ORIGIN,
 		credentials: true,
-		
+		exposedHeaders: ["Set-Cookie"],
 	}),
 );
 app.use("/api/v1", route);
 
 app.listen(port, () => {
-	mongoose.connect("mongodb://localhost:27017/cyberStore").then(() => {
+	mongoose.connect("mongodb://localhost:27017/cyberstore").then(() => {
 		console.log("MongoDB connected");
 		console.log("[Server] : Server is running at http://localhost:", port);
 	});
