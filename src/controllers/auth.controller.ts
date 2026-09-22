@@ -4,16 +4,9 @@ import jwt from "jsonwebtoken";
 import { user } from "../models/user.model.js";
 import "dotenv/config";
 
-function createCookies(
-	payload: {
-		_id: string;
-		role: string[];
-		status: string;
-	},
-	isRememberMe: boolean,
-) {
-	const token = jwt.sign({ payload }, process.env.JWT_SECRET!, {
-		expiresIn: "3m",
+function createCookies(user_id: string, isRememberMe: boolean) {
+	const token = jwt.sign({ user_id }, process.env.JWT_SECRET!, {
+		expiresIn: isRememberMe ? "7d" : "1d",
 	});
 
 	const cookieOptions: CookieOptions = {
@@ -91,14 +84,7 @@ const login = async (_req: Request, _res: Response) => {
 			});
 		}
 
-		const { token, cookieOptions } = createCookies(
-			{
-				_id: userExist._id,
-				role: userExist.role,
-				status: userExist.status,
-			},
-			isRememberMe,
-		);
+		const { token, cookieOptions } = createCookies(userExist._id, isRememberMe);
 
 		_res.cookie("x-auth-token", token, cookieOptions);
 
@@ -121,11 +107,30 @@ const logout = async (_req: Request, _res: Response) => {
 			message: "Logout successful",
 		});
 	} catch (error) {
+		console.error(error);
 		const message =
 			error instanceof Error ? error.message : "Internal server error";
 		if (error instanceof Error) {
 			return _res.status(500).json({ message: message });
 		}
+	}
+};
+
+const userNow = async (_req: Request, _res: Response) => {
+	try {
+		const decoded = jwt.verify(
+			_req.cookies["x-auth-token"],
+			process.env.JWT_SECRET!,
+		);
+
+		return _res.status(200).json({
+			message: "Authorized",
+			user: decoded,
+		});
+	} catch {
+		return _res.status(401).json({
+			message: "Invalid or expired token",
+		});
 	}
 };
 
@@ -163,6 +168,7 @@ const forgotPassword = async (_req: Request, _res: Response) => {};
 const changePassword = async (_req: Request, _res: Response) => {};
 
 export {
+	userNow,
 	login,
 	register,
 	logout,

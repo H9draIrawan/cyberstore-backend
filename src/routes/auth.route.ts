@@ -8,10 +8,12 @@ import {
 	refresh,
 	register,
 	resendToken,
+	userNow,
 } from "../controllers/auth.controller.js";
 
 const route = express.Router();
 
+route.get("/user", userNow);
 route.post("/login", login);
 route.post("/register", register);
 route.post("/logout", logout);
