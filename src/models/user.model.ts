@@ -32,15 +32,15 @@ const userSchema = new mongoose.Schema({
 	status: {
 		type: String,
 		default: "pending",
-		//pending, active, blocked, deleted
+		//pending, active, blocked, suspended
 	},
 	createdAt: {
 		type: Date,
-		default: Date.now,
+		default: Date.now(),
 	},
 	updateAt: {
 		type: Date,
-		default: Date.now,
+		default: Date.now(),
 	},
 });
 
