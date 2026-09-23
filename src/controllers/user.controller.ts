@@ -43,18 +43,53 @@ const getUserById = async (_req: Request, _res: Response) => {
 const updateUserById = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
-		const { username, email, password, role, money } = _req.body;
+		const { username, email } = _req.body;
 
 		await user.findByIdAndUpdate(id, {
 			username: username,
 			email: email,
-			password: password,
-			role: role,
-			money: money,
 			updateAt: Date.now(),
 		});
 
 		return _res.status(200).json({ message: "User updated successfully" });
+	} catch (error) {
+		console.error(error);
+		return _res.status(500).json({ message: "Internal server error" });
+	}
+};
+
+const updateUserPasswordById = async (_req: Request, _res: Response) => {
+	try {
+		const { id } = _req.params;
+		const { password } = _req.body;
+
+		await user.findByIdAndUpdate(id, {
+			password: password,
+			updateAt: Date.now(),
+		});
+
+		return _res
+			.status(200)
+			.json({ message: "User password updated successfully" });
+	} catch (error) {
+		console.error(error);
+		return _res.status(500).json({ message: "Internal server error" });
+	}
+};
+
+const updateUserMoneyById = async (_req: Request, _res: Response) => {
+	try {
+		const { id } = _req.params;
+		const { money } = _req.body;
+
+		await user.findByIdAndUpdate(id, {
+			money: money,
+			updateAt: Date.now(),
+		});
+
+		return _res
+			.status(200)
+			.json({ message: "User money updated successfully" });
 	} catch (error) {
 		console.error(error);
 		return _res.status(500).json({ message: "Internal server error" });
@@ -112,7 +147,7 @@ const restoreUserById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const setUserStatusById = async (_req: Request, _res: Response) => {
+const updateUserStatusById = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { status } = _req.body;
@@ -141,7 +176,7 @@ const setUserStatusById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateRolesById = async (_req: Request, _res: Response) => {
+const updateUserRolesById = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { roles } = _req.body;
@@ -198,7 +233,9 @@ export {
 	updateUserById,
 	deleteUserById,
 	restoreUserById,
-	setUserStatusById,
-	updateRolesById,
+	updateUserPasswordById,
+	updateUserStatusById,
+	updateUserMoneyById,
+	updateUserRolesById,
 	updateUsersStatus,
 };
