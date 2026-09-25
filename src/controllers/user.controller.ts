@@ -18,7 +18,7 @@ const getAllUsers = async (_req: Request, _res: Response) => {
 	}
 };
 
-const getUserById = async (_req: Request, _res: Response) => {
+const getUser = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const userById = await user.findById(id);
@@ -40,7 +40,7 @@ const getUserById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateUserById = async (_req: Request, _res: Response) => {
+const updateUser = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { username, email } = _req.body;
@@ -58,7 +58,7 @@ const updateUserById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateUserPasswordById = async (_req: Request, _res: Response) => {
+const updateUserPassword = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { password } = _req.body;
@@ -77,7 +77,7 @@ const updateUserPasswordById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateUserMoneyById = async (_req: Request, _res: Response) => {
+const updateUserMoney = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { money } = _req.body;
@@ -96,7 +96,7 @@ const updateUserMoneyById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const deleteUserById = async (_req: Request, _res: Response) => {
+const deleteUser = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const isDeleted = _req.query.force;
@@ -127,7 +127,7 @@ const deleteUserById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const restoreUserById = async (_req: Request, _res: Response) => {
+const restoreUser = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 
@@ -147,7 +147,7 @@ const restoreUserById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateUserStatusById = async (_req: Request, _res: Response) => {
+const updateUserStatus = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { status } = _req.body;
@@ -176,7 +176,7 @@ const updateUserStatusById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateUserRolesById = async (_req: Request, _res: Response) => {
+const updateUserRoles = async (_req: Request, _res: Response) => {
 	try {
 		const { id } = _req.params;
 		const { roles } = _req.body;
@@ -205,37 +205,14 @@ const updateUserRolesById = async (_req: Request, _res: Response) => {
 	}
 };
 
-const updateUsersStatus = async (_req: Request, _res: Response) => {
-	try {
-		const { id, status } = _req.body;
-
-		const updatedUsers = await user.updateMany(
-			{ _id: { $in: id } },
-			{
-				status,
-				updateAt: Date.now(),
-			},
-		);
-
-		return _res.status(200).json({
-			message: "Users updated successfully",
-			updatedCount: updatedUsers.modifiedCount,
-		});
-	} catch (error) {
-		console.error(error);
-		return _res.status(500).json({ message: "Internal server error" });
-	}
-};
-
 export {
 	getAllUsers,
-	getUserById,
-	updateUserById,
-	deleteUserById,
-	restoreUserById,
-	updateUserPasswordById,
-	updateUserStatusById,
-	updateUserMoneyById,
-	updateUserRolesById,
-	updateUsersStatus,
+	getUser,
+	updateUser,
+	deleteUser,
+	restoreUser,
+	updateUserPassword,
+	updateUserStatus,
+	updateUserMoney,
+	updateUserRoles,
 };

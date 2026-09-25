@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
 	status: {
 		type: String,
 		default: "pending",
-		//pending, active, blocked, suspended
+		//pending, active, suspended
 	},
 	createdAt: {
 		type: Date,
