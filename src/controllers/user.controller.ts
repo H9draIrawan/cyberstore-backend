@@ -7,6 +7,7 @@ const getAllUsers = async (_req: Request, _res: Response) => {
 		return _res.status(200).json({
 			message: "Users retrieved successfully",
 			users: users.map((u) => ({
+				_id: u._id,
 				username: u.username,
 				email: u.email,
 				status: u.status,
@@ -29,6 +30,7 @@ const getUser = async (_req: Request, _res: Response) => {
 		return _res.status(200).json({
 			message: "User retrieved successfully",
 			user: {
+				_id: userById._id,
 				username: userById.username,
 				email: userById.email,
 				status: userById.status,

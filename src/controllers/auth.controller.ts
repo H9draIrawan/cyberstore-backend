@@ -4,15 +4,20 @@ import jwt from "jsonwebtoken";
 import { user } from "../models/user.model.js";
 import "dotenv/config";
 
-function createCookies(user_id: string, isRememberMe: boolean) {
-	const token = jwt.sign({ user_id }, process.env.JWT_SECRET!, {
+const authCookieOptions: CookieOptions = {
+	httpOnly: true,
+	secure: false,
+	sameSite: "lax",
+	path: "/",
+};
+
+function createCookies(_id: string, isRememberMe: boolean) {
+	const token = jwt.sign({ _id }, process.env.JWT_SECRET!, {
 		expiresIn: isRememberMe ? "7d" : "1d",
 	});
 
 	const cookieOptions: CookieOptions = {
-		httpOnly: true,
-		secure: true,
-		sameSite: "lax",
+		...authCookieOptions,
 		maxAge: isRememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined,
 	};
 
@@ -102,7 +107,7 @@ const login = async (_req: Request, _res: Response) => {
 
 const logout = async (_req: Request, _res: Response) => {
 	try {
-		_res.clearCookie("x-auth-token");
+		_res.clearCookie("x-auth-token", authCookieOptions);
 		return _res.status(200).json({
 			message: "Logout successful",
 		});

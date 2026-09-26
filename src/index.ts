@@ -15,7 +15,6 @@ app.use(
 	cors({
 		origin: process.env.CORS_ORIGIN,
 		credentials: true,
-		exposedHeaders: ["Set-Cookie"],
 	}),
 );
 app.use("/api/v1", route);
